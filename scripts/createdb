@@ -1,0 +1,16 @@
+#!/bin/sh
+dynamodb_endpoint=http://dynamodb:8000
+table_conf=/etc/dynamodb/tables.conf
+
+while read line; do
+  table_name=$(echo ${line} | awk '{print $1}')
+  table_key=$(echo ${line} | awk '{print $2}')
+  echo "Creating table ${table_name} with key ${table_key}"
+  aws dynamodb create-table \
+    --provisioned-throughput ReadCapacityUnits=1,WriteCapacityUnits=5 \
+    --table-name ${table_name} \
+    --attribute-definitions AttributeName=${table_key},AttributeType=S \
+    --key-schema AttributeName=${table_key},KeyType=HASH \
+    --endpoint-url ${dynamodb_endpoint} >/dev/null;
+done < ${table_conf}
+echo "Done!"
