@@ -1,4 +1,4 @@
-ifndef $(BUILD_SCOPE)
+ifndef BUILD_SCOPE
 BUILD_SCOPE=dev
 endif
 
