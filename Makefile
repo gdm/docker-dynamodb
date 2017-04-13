@@ -18,6 +18,14 @@ run:
 clean:
 	@docker rm $$(docker kill $(DYNAMODB_CONTAINER))
 
+build-tables:
+	@docker run --rm \
+	-v `pwd`/scripts/maketables.sh:/usr/local/bin/maketables.sh \
+	--link $(DYNAMODB_CONTAINER):dynamodb \
+	--entrypoint /usr/local/bin/maketables.sh \
+	vungle/awscli
+	@docker commit $(DYNAMODB_CONTAINER) $(SUBPROJECT_IMAGE)
+
 with-tables:
 	@docker run --rm \
 	-v `pwd`/scripts/createdb:/usr/local/bin/createdb \
